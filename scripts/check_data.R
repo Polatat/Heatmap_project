@@ -50,9 +50,7 @@ filtered_gene <- c(
   "IFNA22P", "TMEM215", "LINC00950", "ANXA1", "AKNA", "SAT1","NXF3"
 )
 
-A549_hACE2_log2FC_sheet <- A549_hACE2_sheet_filtered[,c("Gene","log2FoldChange")]
 
-View(A549_hACE2_log2FC_sheet)
 
 #  A549
 A549_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
@@ -69,7 +67,8 @@ A549_sheet_filtered <- A549_sheet %>%
 View(A549_sheet_filtered)
 
 #  A549_log2FC
-A549_sheet_log2Fc <- A549_hACE2_sheet_filtered %>%
+
+A549_sheet_log2Fc <- A549_sheet_filtered %>%
                       select(Gene,log2FoldChange)
 
 colnames(A549_sheet_log2Fc)[2] <- "A549"
