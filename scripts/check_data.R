@@ -24,7 +24,7 @@ dim(HEK293T_hACE2_filtered) # 78 rows and 6 column
 
 # HEK293T_hACE2_log2FC
 HEK293T_hACE2_log2FC_filtered <- HEK293T_hACE2_filtered[,c("Gene","log2FoldChange")]
-colnames(HEK293T_hACE2_log2FC_filtered)[2] <- "HEK293T_hACE2"
+colnames(HEK293T_hACE2_log2FC_filtered)[2] <- "HEK293T_A"
 View(HEK293T_hACE2_log2FC_filtered)
 
 
@@ -32,6 +32,7 @@ View(HEK293T_hACE2_log2FC_filtered)
 gene_names <- HEK293T_hACE2_filtered$Gene
 filtered_gene_name <- unique(gene_names)
 filtered_gene_name
+
 
 filtered_gene <- c(
   "TNFRSF9", "PTAFR", "IL23R", "CTH", "PTGER3", "LOC100131564",
@@ -184,8 +185,6 @@ View(Calu3_C_log2FC_sheet)
 
 
 
-
-
 # hBO
 
 hBO_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
@@ -252,6 +251,7 @@ hCM_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
                                       "numeric", "numeric", "numeric"))
 
 View(hCM_sheet)
+
 colnames(hCM_sheet)[1] <- "Gene"
 
 hCM_sheet_filtered <- hCM_sheet%>%
@@ -272,75 +272,41 @@ View(hCM_log2FC_sheet)
 
 
 # Merging table
-# function
-merge_table <- function(y){
-                               merge(heatmap_log2FC_table,
-                                y,
-                                by.x = "Gene",
-                                by.y = "Gene",
-                                all = TRUE)
-}
-# first merge
-heatmap_log2FC_table <- merge(x = HEK293T_hACE2_log2FC_filtered,
-                              y = A549_sheet_log2Fc,
-                              by.x = "Gene",
-                              by.y = "Gene",
-                              all = TRUE)
-View(heatmap_log2FC_table)
-#second merge
-heatmap_log2FC_table <- merge_table(A549_hACE2_log2FC_sheet)
-View(heatmap_log2FC_table)
 
 
-# third merge
-heatmap_log2FC_table <-merge_table(Caco2_log2FC_sheet)
-View(heatmap_log2FC_table)
+log2FC_data <- list(HEK293T_hACE2_log2FC_filtered,A549_sheet_log2Fc,A549_hACE2_log2FC_sheet,
+                    Caco2_log2FC_sheet,Calu3_B_log2FC_sheet,
+                    Calu3_C_log2FC_sheet,hBO_log2FC_sheet,
+                    hAE_log2FC_sheet,hCM_log2FC_sheet)
 
-# fourth merge
-heatmap_log2FC_table <-merge_table(Calu3_B_log2FC_sheet)
-View(heatmap_log2FC_table)
+merge_heatmap_table <- Reduce(function(x,y) merge(x,y, by ="Gene", all = TRUE),
+                              log2FC_data)
 
-# fifth merge
+View(merge_heatmap_table)
 
-heatmap_log2FC_table <-merge_table(Calu3_C_log2FC_sheet)
-View(heatmap_log2FC_table)
+# gene column to rowname
 
+merge_heatmap_table <- column_to_rownames(merge_heatmap_table, var ="Gene")
 
-# sixth
+dim(merge_heatmap_table)
 
-heatmap_log2FC_table <-merge_table(hBO_log2FC_sheet)
-View(heatmap_log2FC_table)
+matrix_heatmap_table <- as.matrix(merge_heatmap_table)
 
-
-#seven 
-
-heatmap_log2FC_table <-merge_table(hAE_log2FC_sheet)
-View(heatmap_log2FC_table)
-
-#eigth
+View(matrix_heatmap_table)
+dim(matrix_heatmap_table)
 
 
-heatmap_log2FC_table <-merge_table(hCM_log2FC_sheet)
-View(heatmap_log2FC_table)
+transpose_heatmap_table <- t(matrix_heatmap_table)
 
-# heatmap
-
-
-new_heatmap_log2FC_table <- column_to_rownames(heatmap_log2FC_table,
-                                                      var = "Gene")
-View(new_heatmap_log2FC_table)
-
-heatmap_log2FC_table_matrix <- as.matrix(new_heatmap_log2FC_table)
-
-View(heatmap_log2FC_table_matrix)
-
-dim(heatmap_log2FC_table_matrix)
+View(transpose_heatmap_table)
+dim(transpose_heatmap_table)
 
 
 # heatmap
+heatmap.2(matrix_heatmap_table)
 
-heatmap.2(heatmap_log2FC_table_matrix)
-# column  to rownames
+heatmap.2(transpose_heatmap_table)
+
 
 
 
