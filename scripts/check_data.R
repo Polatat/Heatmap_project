@@ -2,14 +2,19 @@ library(readxl)
 library(dplyr)
 library(gplots)
 library(tibble)
-
+library(RColorBrewer)
+library(BiocManager) # install.packages("BiocManger") BiocManager::install("ComplexHeatmap")
+library(ComplexHeatmap)
+library(circlize) # for Legends in ComplexHeatmap
 # HEK293T_hACE2
+
 HEK293T_hACE2_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
                                            col_types = c("text", "numeric", "numeric", 
                                                          "numeric", "numeric", "numeric"))
 View(HEK293T_hACE2_sheet)
+str(HEK293T_hACE2_sheet)
 
-HEK293T_hACE2_filtered_with_padj <- HEK293T_hACE2_sheet %>%
+zHEK293T_hACE2_filtered_with_padj <- HEK293T_hACE2_sheet %>%
                                     filter(padj < 0.05,
                                     log2FoldChange >= 2 | log2FoldChange <= -1.5) 
 
@@ -301,11 +306,63 @@ transpose_heatmap_table <- t(matrix_heatmap_table)
 View(transpose_heatmap_table)
 dim(transpose_heatmap_table)
 
+##set up red blue color
 
-# heatmap
+bwr <- colorRampPalette(c("blue", "white", "red"))(150)
+
+# heatmap(gplot2)
+
 heatmap.2(matrix_heatmap_table)
 
-heatmap.2(transpose_heatmap_table)
+
+
+heatmap.2(transpose_heatmap_table,col=bluered, scale="column", tracecol="#303030",
+          lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+heatmap.2(transpose_heatmap_table,col=bluered,  tracecol="#303030",
+          lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+
+heatmap.2(transpose_heatmap_table,col=bluered , trace = "none", offsetCol = 0,
+          lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+heatmap.2(transpose_heatmap_table,col=bwr , trace = "none", offsetCol = 0,
+          lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+heatmap.2(transpose_heatmap_table,col=bwr , trace = "none", offsetCol = 0,
+          keysize = 2., lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+
+heatmap.2(transpose_heatmap_table,col=bwr, scale = "column", trace = "none", offsetCol=0,
+          lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+
+#heatmap(Complexhetmap)
+
+# setting row order
+
+cell_line_order <- c("hCM","A549","Calu3_C",
+                     "Calu3_B","hAE","A549_A",
+                     "hBO","Caco2","HEK293T_A")
+
+# setting heatmap legend scale
+col_scale = colorRamp2(c(-4,0,4), c("blue","white","red"))
+lgd = Legend(col_fun = col_scale, title = "log2FC")
+
+complex_heatmap_table <- Heatmap(transpose_heatmap_table, name = "log2FC",
+                        cluster_rows = TRUE,
+                        show_column_names = FALSE,
+                        column_dend_side = "bottom",
+                        row_order = cell_line_order,
+                        heatmap_width = unit(10.5, "cm"), 
+                        heatmap_height = unit(8, "cm"),
+                        show_heatmap_legend = FALSE)
+
+
+complex_heatmap_table
+# draw the heat map 
+draw(complex_heatmap_table,heatmap_legend_list = (list(lgd)),
+     heatmap_legend_side ="left")
 
 
 
