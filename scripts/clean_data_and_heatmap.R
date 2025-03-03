@@ -20,6 +20,17 @@ HEK293T_hACE2_filtered_with_padj <- HEK293T_hACE2_sheet %>%
 
 View(HEK293T_hACE2_filtered_with_padj)
 
+colnames(HEK293T_hACE2_filtered_with_padj)[1] <- "Gene"
+View(HEK293T_hACE2_filtered_with_padj)
+dim(HEK293T_hACE2_filtered_with_padj) # 78 rows and 6 column
+
+# HEK293T_hACE2_log2FC_filtered_with_padj
+HEK293T_hACE2_log2FC_filtered_with_padj <- HEK293T_hACE2_filtered_with_padj[,c("Gene","log2FoldChange")]
+colnames(HEK293T_hACE2_log2FC_filtered_with_padj)[2] <- "HEK293T_A"
+View(HEK293T_hACE2_log2FC_filtered_with_padj)
+
+
+
 HEK293T_hACE2_filtered <- HEK293T_hACE2_sheet %>%
                           filter(log2FoldChange >= 2 | log2FoldChange <= -1.5) 
 
@@ -33,13 +44,22 @@ colnames(HEK293T_hACE2_log2FC_filtered)[2] <- "HEK293T_A"
 View(HEK293T_hACE2_log2FC_filtered)
 
 
+# filter gene with padj
+gene_names <- HEK293T_hACE2_filtered_with_padj$Gene
+filtered_gene_name <- unique(gene_names)
+filtered_gene_name
+
 # filter gene
 gene_names <- HEK293T_hACE2_filtered$Gene
 filtered_gene_name <- unique(gene_names)
 filtered_gene_name
 
-class(filtered_gene_name)
 
+
+class(filtered_gene_name)
+length(filtered_gene_name)
+
+#filtered with out padj
 filtered_gene <- c(
   "TNFRSF9", "PTAFR", "IL23R", "CTH", "PTGER3", "LOC100131564",
   "TBX15", "TXNIP", "MIR5087", "HSPA6", "HSPA7", "SLC9C2",
@@ -56,6 +76,24 @@ filtered_gene <- c(
   "LINC01301", "C8orf46", "ATP6V0D2", "TG", "VLDLR-AS1", "LURAP1L",
   "IFNA22P", "TMEM215", "LINC00950", "ANXA1", "AKNA", "SAT1","NXF3"
 )
+
+#filtered with padj
+filtered_gene <- c(
+  "TNFRSF9", "PTAFR", "IL23R", "CTH", "PTGER3", "LOC100131564",
+  "TBX15", "TXNIP", "MIR5087", "HSPA6", "HSPA7", "SLC9C2",
+  "G0S2", "ATF3", "MRC1", "DDIT4", "P4HA1", "LGI1",
+  "CYP2C18", "CYP2C19", "SNHG1", "RAPGEF3", "INHBE", "DDIT3",
+  "SLC17A8", "PCK2", "DICER1-AS1", "CHAC1", "ANPEP", "NUPR1",
+  "MVP", "ANKRD26P1", "TVP23C", "RDM1", "PECAM1", "SOX9-AS1",
+  "CATSPERD", "KIAA1683", "LINC00663", "FUT1", "ALLC", "ERICH2",
+  "TRIB3", "CEBPB-AS1", "PCK1", "C1QTNF6", "ADM2", "LAMB2P1",
+  "SLC7A11-AS1", "SLC7A11", "NRN1", "HSPA1A", "HSPA1B", "C6orf48",
+  "GCM1", "FLJ46906", "FRMD1", "INHBA", "ASNS", "TFR2",
+  "MUC17", "DNAJB9", "MGAM", "MGAM2", "STC1", "SCARA5",
+  "PPAPDC1B", "LINC01301", "C8orf46", "ATP6V0D2", "TG", "VLDLR-AS1",
+  "LURAP1L", "TMEM215", "LINC00950", "ANXA1", "AKNA", "SAT1"
+)
+length(filtered_gene)
 
 
 #  A549
@@ -110,8 +148,6 @@ View(A549_hACE2_log2FC_sheet)
 
 
 # Caco2
-
-
 Caco2_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
                                sheet = "Caco2",
                                col_types = c("text", "numeric", "numeric", 
@@ -137,8 +173,6 @@ View(Caco2_log2FC_sheet)
 
 
 #Calu3_B
-
-
 Calu3_B_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
                           sheet = "Calu3_B",
                           col_types = c("text", "numeric", "numeric", 
@@ -217,12 +251,7 @@ View(hBO_log2FC_sheet)
 
 
 
-
-
-
 #hAE
-
-
 hAE_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
                         sheet = "hAE",
                         col_types = c("text", "numeric", "numeric", 
@@ -238,8 +267,8 @@ View(hAE_sheet_filtered)
 
 dim(hAE_sheet_filtered)
 
-# hAE_log2fc
 
+# hAE_log2fc
 hAE_log2FC_sheet <- hAE_sheet_filtered[,c("Gene","log2FoldChange")]
 
 colnames(hAE_log2FC_sheet)[2] <- "hAE"
@@ -248,8 +277,6 @@ View(hAE_log2FC_sheet)
 
 
 # hCM
-
-
 hCM_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls", 
                         sheet = "hCM",
                         col_types = c("text", "numeric", "numeric", 
@@ -278,8 +305,7 @@ View(hCM_log2FC_sheet)
 
 # Merging table
 
-
-log2FC_data <- list(HEK293T_hACE2_log2FC_filtered,A549_sheet_log2Fc,A549_hACE2_log2FC_sheet,
+log2FC_data <- list(HEK293T_hACE2_log2FC_filtered_with_padj,A549_sheet_log2Fc,A549_hACE2_log2FC_sheet,
                     Caco2_log2FC_sheet,Calu3_B_log2FC_sheet,
                     Calu3_C_log2FC_sheet,hBO_log2FC_sheet,
                     hAE_log2FC_sheet,hCM_log2FC_sheet)
@@ -348,6 +374,14 @@ heatmap.2(transpose_heatmap_table,col=bwr , trace = "none", offsetCol = 0,
 
 heatmap.2(transpose_heatmap_table,col=bwr, scale = "column", trace = "none", offsetCol=0,
           lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
+
+heatmap.2(transpose_heatmap_table, col = bwr, trace = "none", offsetCol = 0, 
+          keysize = 2, 
+          lmat = rbind(c(0, 3, 4),  # First row : dendrogram (3) + heat map (4)
+                       c(2, 1, 0)),  # Second row: Color Key (2) + Main heat map (1)
+          lwid = c(2, 4, 1.5),     # Minimize the size of column of  Color Key 
+          lhei = c(1.5, 4))        # Balance the size of row 
+
 
 
 #heatmap(Complexhetmap)
