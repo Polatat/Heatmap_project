@@ -1,10 +1,10 @@
-library(readxl)
-library(dplyr)
-library(gplots)
-library(tibble)
-library(RColorBrewer)
+library(readxl) # excel
+library(dplyr) # filter and select
+library(gplots) # heatmap.2 
+library(tibble) # column_to_rowname and rowname_to_columns
+library(RColorBrewer) # colour heatmap 
 library(BiocManager) # install.packages("BiocManger") BiocManager::install("ComplexHeatmap")
-library(ComplexHeatmap)
+library(ComplexHeatmap) # Draw package and Heatmap
 library(circlize) # for Legends in ComplexHeatmap
 # HEK293T_hACE2
 
@@ -14,7 +14,7 @@ HEK293T_hACE2_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 View(HEK293T_hACE2_sheet)
 str(HEK293T_hACE2_sheet)
 
-zHEK293T_hACE2_filtered_with_padj <- HEK293T_hACE2_sheet %>%
+HEK293T_hACE2_filtered_with_padj <- HEK293T_hACE2_sheet %>%
                                     filter(padj < 0.05,
                                     log2FoldChange >= 2 | log2FoldChange <= -1.5) 
 
@@ -25,7 +25,7 @@ HEK293T_hACE2_filtered <- HEK293T_hACE2_sheet %>%
 
 colnames(HEK293T_hACE2_filtered)[1] <- "Gene"
 View(HEK293T_hACE2_filtered)
-dim(HEK293T_hACE2_filtered) # 78 rows and 6 column
+dim(HEK293T_hACE2_filtered) # 85 rows and 6 column
 
 # HEK293T_hACE2_log2FC
 HEK293T_hACE2_log2FC_filtered <- HEK293T_hACE2_filtered[,c("Gene","log2FoldChange")]
@@ -38,6 +38,7 @@ gene_names <- HEK293T_hACE2_filtered$Gene
 filtered_gene_name <- unique(gene_names)
 filtered_gene_name
 
+class(filtered_gene_name)
 
 filtered_gene <- c(
   "TNFRSF9", "PTAFR", "IL23R", "CTH", "PTGER3", "LOC100131564",
@@ -55,7 +56,6 @@ filtered_gene <- c(
   "LINC01301", "C8orf46", "ATP6V0D2", "TG", "VLDLR-AS1", "LURAP1L",
   "IFNA22P", "TMEM215", "LINC00950", "ANXA1", "AKNA", "SAT1","NXF3"
 )
-
 
 
 #  A549
@@ -283,19 +283,30 @@ log2FC_data <- list(HEK293T_hACE2_log2FC_filtered,A549_sheet_log2Fc,A549_hACE2_l
                     Caco2_log2FC_sheet,Calu3_B_log2FC_sheet,
                     Calu3_C_log2FC_sheet,hBO_log2FC_sheet,
                     hAE_log2FC_sheet,hCM_log2FC_sheet)
+typeof(log2FC_data)
+class(log2FC_data)
+str(log2FC_data)
 
 merge_heatmap_table <- Reduce(function(x,y) merge(x,y, by ="Gene", all = TRUE),
                               log2FC_data)
 
 View(merge_heatmap_table)
 
+
 # gene column to rowname
+# tibble
 
 merge_heatmap_table <- column_to_rownames(merge_heatmap_table, var ="Gene")
 
 dim(merge_heatmap_table)
 
+typeof(merge_heatmap_table)
+class(merge_heatmap_table)
+
 matrix_heatmap_table <- as.matrix(merge_heatmap_table)
+
+typeof(matrix_heatmap_table)
+class(matrix_heatmap_table)
 
 View(matrix_heatmap_table)
 dim(matrix_heatmap_table)
@@ -306,15 +317,17 @@ transpose_heatmap_table <- t(matrix_heatmap_table)
 View(transpose_heatmap_table)
 dim(transpose_heatmap_table)
 
-##set up red blue color
+##set up red blue color 
 
-bwr <- colorRampPalette(c("blue", "white", "red"))(150)
+bwr <- colorRampPalette(c("blue", "white", "red"))(200)
 
 # heatmap(gplot2)
 
 heatmap.2(matrix_heatmap_table)
+heatmap.2(transpose_heatmap_table)
 
 
+# transpose
 
 heatmap.2(transpose_heatmap_table,col=bluered, scale="column", tracecol="#303030",
           lmat=rbind( c(0, 3, 4), c(2,1,0 ) ), lwid=c(1.5, 4, 2 ))
@@ -361,8 +374,11 @@ complex_heatmap_table <- Heatmap(transpose_heatmap_table, name = "log2FC",
 
 complex_heatmap_table
 # draw the heat map 
+
 draw(complex_heatmap_table,heatmap_legend_list = (list(lgd)),
      heatmap_legend_side ="left")
+
+
 
 
 
