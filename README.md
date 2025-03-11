@@ -4,8 +4,7 @@
 ## Clone this project 
 To clone this repository, use the following command:
 ```
- git clone https://github.com/Polatat/Heatmap_project.git
-
+ git clone https://github.com/Polatat/Heatmap_project.gi
 ```
 
 ## Group Members 
