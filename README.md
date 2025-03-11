@@ -1,4 +1,4 @@
-# Heatmap_project
+# Heatmap project
 
 
 ## Clone this project 
