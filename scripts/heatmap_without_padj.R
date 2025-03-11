@@ -27,12 +27,12 @@ View(HEK293T_hACE2_log2FC_filtered_without_padj)
 
 # filter gene without padj
 gene_names <- HEK293T_hACE2_filtered_without_padj$Gene
-filtered_gene_name <- unique(gene_names)
-filtered_gene_name
+filtered_gene_without_padj_name <- unique(gene_names)
+filtered_gene_without_padj_name
 
 
 #filtered without padj
-filtered_gene <- c(
+filtered_gene_without_padj <- c(
   "TNFRSF9", "PTAFR", "IL23R", "CTH", "PTGER3", "LOC100131564",
   "TBX15", "TXNIP", "MIR5087", "HSPA6", "HSPA7", "SLC9C2",
   "PIGR", "FCAMR", "G0S2", "ATF3", "MRC1", "DDIT4",
@@ -61,13 +61,13 @@ colnames(A549_sheet)[1] <- "Gene"
 
 
 A549_sheet_filtered <- A549_sheet %>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(A549_sheet_filtered)
 
 #  A549_log2FC
 
-A549_sheet_log2Fc <- A549_sheet_filtered %>%
+A549_sheet_log2Fc_without <- A549_sheet_filtered %>%
   select(Gene,log2FoldChange)
 
 colnames(A549_sheet_log2Fc)[2] <- "A549"
@@ -87,7 +87,7 @@ colnames(A549_hACE2_sheet)[1] <- "Gene"
 
 
 A549_hACE2_sheet_filtered <- A549_hACE2_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 
 #View(A549_hACE2_sheet_filtered)
@@ -112,7 +112,7 @@ Caco2_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(Caco2_sheet)[1] <- "Gene"
 
 Caco2_sheet_filtered <- Caco2_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(Caco2_sheet_filtered)
 
@@ -137,7 +137,7 @@ Calu3_B_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(Calu3_B_sheet)[1] <- "Gene"
 
 Calu3_B_sheet_filtered <- Calu3_B_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(Calu3_B_sheet_filtered)
 
@@ -163,7 +163,7 @@ Calu3_C_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(Calu3_C_sheet)[1] <- "Gene"
 
 Calu3_C_sheet_filtered <- Calu3_C_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(Calu3_C_sheet_filtered)
 
@@ -190,7 +190,7 @@ hBO_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(hBO_sheet)[1] <- "Gene"
 
 hBO_sheet_filtered <- hBO_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(hBO_sheet_filtered)
 
@@ -216,7 +216,7 @@ hAE_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(hAE_sheet)[1] <- "Gene"
 
 hAE_sheet_filtered <- hAE_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(hAE_sheet_filtered)
 
@@ -242,7 +242,7 @@ hCM_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
 colnames(hCM_sheet)[1] <- "Gene"
 
 hCM_sheet_filtered <- hCM_sheet%>%
-  filter(Gene %in% filtered_gene)
+  filter(Gene %in% filtered_gene_without_padj)
 
 #View(hCM_sheet_filtered)
 
