@@ -178,7 +178,7 @@ Calu3_B_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
                           col_types = c("text", "numeric", "numeric", 
                                         "numeric", "numeric", "numeric"))
 
-View(Calu3_B_sheet)
+#View(Calu3_B_sheet)
 colnames(Calu3_B_sheet)[1] <- "Gene"
 
 Calu3_B_sheet_filtered <- Calu3_B_sheet%>%
@@ -257,7 +257,7 @@ hAE_sheet <- read_excel("data/41598_2021_96462_MOESM1_ESM.xls",
                         col_types = c("text", "numeric", "numeric", 
                                       "numeric", "numeric", "numeric"))
 
-View(hAE_sheet)
+#View(hAE_sheet)
 colnames(hAE_sheet)[1] <- "Gene"
 
 hAE_sheet_filtered <- hAE_sheet%>%
